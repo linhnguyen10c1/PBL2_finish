@@ -4,6 +4,7 @@
 #include "doctor.h"
 #include "patient.h"
 #include "medicine.h"
+#include "record.h"
 #include "linklist.h"
 #include <iostream>
 using namespace std;
@@ -31,7 +32,7 @@ void module_menu_admin(LinkedList<T>& list,const string& filename){
 			case 1:{
         T::set_id = list.get_id_from_file();
 				T item;
-				item.set_data();
+				item.set_data(); // set_data() của record vẫn chưa làm được
 				list.add(item);
 				write_data_to_file(list,filename);
 				cout << "Object added successfully" << endl;
@@ -84,7 +85,7 @@ void menu_admin(){
    LinkedList<Patient> patient_list;
    LinkedList<Doctor> doctor_list;
 	 LinkedList<Medicine> medicine_list;
-  //  LinkedList<Record> record_list;
+   LinkedList<Record> record_list;
 	int choice;
 	  do{
     cout << "----------------------" << endl;
@@ -110,7 +111,9 @@ void menu_admin(){
 				 module_menu_admin(medicine_list,"medicines.txt");
 				break;
 			case 4: 
-        // module_menu_admin(record_list, "records.txt");
+         module_menu_admin(record_list, "records.txt");
+				 /* cần giải quyết add một cái record mới: hệ thống
+				 cần chỉ ra đến bác sĩ nào là tối ưu*/
 				break;
 			case 0: 
 

@@ -1,0 +1,13 @@
+hey, phòng khám của tôi có 3 bác sĩ khám lâm sàng,
+và 10 bác sĩ khám cận lâm sàng,
+mỗi loại khám cận lâm sàng như chụp X quang,
+nội soi, siêu âm, điện tâm đồ, test máu và nước tiểu 
+thì có hai bác sĩ trong 10 bác sĩ đó phụ trách,
+một bệnh nhân đến khám một nhân viên sẽ thêm vào hệ thống
+và hệ thống sẽ phân luồng đến khám bác sĩ lâm sàng nào,
+sau khi đến bác sĩ khám lâm sàng bác sĩ đó có quyền phân luồng
+bạn đến bác sĩ cận lâm sàng nào, nhưng có thể phân luồng đến nhiều 
+bác sĩ(vì cần test nhiều loại khác nhau) 
+. Bài toán của tôi là làm sao hai lần phân luồng đó một cách hiệu quả
+, với ba dữ liệu đầu vào, sự  khẩn cấp của bệnh nhân (có hoặc không),
+ đặt lịch tái khám trước đó, sự rảnh của bác sĩ
