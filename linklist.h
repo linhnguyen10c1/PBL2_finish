@@ -41,6 +41,7 @@ public:
     int search_check_update_delete_recover_by_id(long long ID,const string &function);
 
     int count_patients_today(long long id_doctor) const;
+    int count_patients_by_priority(long long doctor_id, int priority) const ;
 };
 template <typename T>
 int LinkedList<T>::check_id_password(long long id, string &password){
@@ -170,6 +171,19 @@ int LinkedList<T>::count_patients_today(long long doctor_id) const {
     return count;
 }
 
+template <typename T>
+int LinkedList<T>::count_patients_by_priority(long long doctor_id, int priority) const {
+    int count = 0;
+    Node<T>* current = head;
+    while (current != nullptr) {
+        const T& record = current->data;
+        if (record.get_id_doctor() == doctor_id && record.get_priority() == priority && !record.get_is_deleted()) {
+            count++;
+        }
+        current = current->next;
+    }
+    return count;
+}
 
 template <typename T>
 void read_data_from_file(LinkedList<T>& list, const string& filename) {
@@ -196,5 +210,39 @@ void write_data_to_file(LinkedList<T>& list,const string& filename) {
     cout << "Data was wrote in: " << filename << endl;
 }
 
+// vì patient, doctor có cả phần này nên dùng template cho tiện
+template <typename T>
+void module_menu_manage_personal_information(long long ID, LinkedList<T> &list, const string &filename)
+{
+	//read_data_from_file(list, filename);
+	int choice;
+	do
+	{
+		cout << "1. Display your information" << endl
+				 << "2. Update your information" << endl
+				 << "0. Exit" << endl;
+		cout << "Choose your option: ";
+		cin >> choice;
+		cin.ignore();
+		switch (choice)
+		{
+		case 1:
+		{
+			list.search_check_update_delete_recover_by_id(ID, "check");
+			break;
+		}
+		case 2:
+		{
+			list.search_check_update_delete_recover_by_id(ID, "update");
+			write_data_to_file(list, filename);
+			break;
+		}
+		case 0:
+		{
+		}
+		}
+
+	} while (choice != 0);
+}
 
  #endif 

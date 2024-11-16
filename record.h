@@ -10,7 +10,7 @@
 #include "patient.h"
 #include "doctor.h"
 #include "linklist.h"
-
+#include "testing.h"
 using namespace std;
 
 class Record :public Checking{
@@ -38,10 +38,14 @@ public:
     void display() const;
   
     // dành cho doctor_general
-    void update_data_general_doctor(double x);
+    void update_data();
+
+    long long get_id_patient() const{ return id_patient;}
 
     void read_a_object_from_file(const string &line);
     void write_a_object_to_file(ofstream &file);
+    
+    void testing_detail(long long ID_checking, int priority);
    
 };
 

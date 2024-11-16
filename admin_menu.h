@@ -32,7 +32,7 @@ void module_menu_admin(LinkedList<T>& list,const string& filename){
 			case 1:{
         T::set_id = list.get_id_from_file();
 				T item;
-				item.set_data(); // set_data() của record vẫn chưa làm được
+				item.set_data(); //
 				list.add(item);
 				write_data_to_file(list,filename);
 				cout << "Object added successfully" << endl;
@@ -54,8 +54,11 @@ void module_menu_admin(LinkedList<T>& list,const string& filename){
 				cout << "Enter ID you want update: ";
 				cin  >> id;
 				cin.ignore();
+				if(id >= 5000000 && id < 6000000) { cout << "You are not allowed to update main data in record" << endl;}
+				else{
 				list.search_check_update_delete_recover_by_id(id, "update");
 				write_data_to_file(list,filename);
+				}
 				break;
 			}
 			case 5:{

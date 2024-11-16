@@ -37,17 +37,67 @@ void Checking::update_end_day(){
                 to_string(ltm->tm_sec);
 }
 
-void update_patients_waiting_in_list(long long ID_doctor, const string &modify) {
+
+// dành cho admin nên đang là linklist Record
+void Checking::update_is_recovered() {
+        if(end_checking != "0"){
+        is_deleted = false;
+        }
+        else {
+            cout << "Please create new record, because patients_waiting of a doctor changed" << endl;
+        }
+    }
+
+void Checking::update_is_deleted(){
+        if(start_checking == "0"){
+            is_deleted = true;
+            update_patients_waiting_in_list(get_id_doctor(), "decreasing");
+            }
+        else {
+            cout << "You don't allow delete when doctor is updating data" << endl;
+        }
+    }
+
+
+void Checking::update_result_by_doctor(){
+    cout << "Result: ";
+    getline(cin, final_result);
+
+    // Update doctor's note
+    cout << "Doctor's Note: ";
+    getline(cin, doctor_note);
+
+    // Update status checking to completed
+    status_checking = "completed";
+    update_end_day();
+    
+    cost += get_price_of_doctor(get_id_doctor());
+
+}
+
+void update_patients_waiting_in_list(long long ID_doctor, const string &modify, string room ) {
         LinkedList<Doctor> doctor_list;
         read_data_from_file(doctor_list, "doctors.txt");
         Node<Doctor>* current = doctor_list.get_head();
         while (current != nullptr) {
             Doctor& doctor = current->data;
-            if (doctor.get_id() == ID_doctor) {
+            if ((doctor.get_id() == ID_doctor || doctor.get_room() == room) && doctor.get_is_deleted() == false) {
                 doctor.update_patients_waiting(modify);
-                break;
             }
             current = current->next;
         }
         write_data_to_file(doctor_list, "doctors.txt");
     }
+
+double get_price_of_doctor(long long ID_doctor){
+        LinkedList<Doctor> doctor_list;
+        read_data_from_file(doctor_list, "doctors.txt");
+        Node<Doctor>* current = doctor_list.get_head();
+        while (current != nullptr) {
+            Doctor& doctor = current->data;
+            if (doctor.get_id() == ID_doctor || doctor.get_is_deleted() == false) {
+                return doctor.get_price();
+            }
+            current = current->next;
+        }
+}

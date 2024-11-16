@@ -11,7 +11,9 @@
 
 using namespace std;
 
-void update_patients_waiting_in_list(long long ID_doctor, const string &modify);
+double get_price_of_doctor(long long ID_doctor);
+
+void update_patients_waiting_in_list(long long ID_doctor, const string &modify, string room = "0");
 
 class Checking {
 protected:
@@ -45,34 +47,22 @@ public:
     bool get_is_deleted() const{return is_deleted;}
     double get_cost() const{return cost;}
     string get_date() const {return start_checking;}
+    int get_priority() const {return priority;}
+    string get_room() const {return room;}
     
     // dành cho người dùng là manager
-    void update_data(){ cout << "You are not allowed to update main data in record" << endl;}
+
     // chỉ được xóa giai đoạn đầu thôi, sau khi bác sĩ ghi vào rồi thì không được xóa nữa
-    void update_is_deleted(){
-        if(start_checking == "0"){
-            is_deleted = true;
-            update_patients_waiting_in_list(get_id_doctor(), "decreasing");
-            }
-        else {
-            cout << "You don't allow delete when doctor is updating data" << endl;
-        }
+    void update_is_deleted();
 
     // chỉ được phục hồi khi bản ghi đã hòan thành
     // còn mới ghi vào thì chỉ có xóa luôn, muốn khám lại
     // chỉ còn cách ID mới, vì bác sĩ được ghi trước đó số người đợi đã khác
-    }
-
-    void update_is_recovered() {
-        if(end_checking != "0"){
-        is_deleted = false;
-        }
-        else {
-            cout << "You nedd new record, can't recover" << endl;
-        }
-    }
+    void update_is_recovered();
     void update_start_day();
     void update_end_day();
+    void update_result_by_doctor();
+
 
     // dành cho bác sĩ
   

@@ -2,6 +2,7 @@
 #include "linklist.h"
 #include "admin.h"
 #include "admin_menu.h"
+#include "doctor_menu.h"
 
 using namespace std;
 
@@ -51,11 +52,11 @@ void login()
     }
     case 2:
     {
-      // if (is_exist_in_file<Doctor>(ID, password, "doctors.txt"))
-      //   menu_doctor(ID);
-      // else
-      //   break;
-      // break;
+      if (is_exist_in_file<Doctor>(ID, password, "doctors.txt"))
+        menu_doctor(ID);
+      else
+        break;
+      break;
     }
     case 3:
     {

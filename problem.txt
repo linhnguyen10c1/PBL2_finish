@@ -11,3 +11,6 @@ bác sĩ(vì cần test nhiều loại khác nhau)
 . Bài toán của tôi là làm sao hai lần phân luồng đó một cách hiệu quả
 , với ba dữ liệu đầu vào, sự  khẩn cấp của bệnh nhân (có hoặc không),
  đặt lịch tái khám trước đó, sự rảnh của bác sĩ
+
+
+ tương tự việc gán bác sĩ lâm sàn nào khám cho bệnh nhân trong file record, bây giờ làm sao gán bác sĩ khám lâm sàn cho bệnh nhân một cách hiệu quả, biết bác sĩ lâm sàn có thể chỉ định bệnh nhân khám cận lâm sàn một cách hiểu quả
