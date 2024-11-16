@@ -7,6 +7,9 @@
 #include <fstream>
 #include <ctime>
 #include "checking.h"
+#include "patient.h"
+#include "doctor.h"
+#include "linklist.h"
 
 using namespace std;
 
@@ -18,34 +21,29 @@ private:
     string symptom = "0";
     string diagnosis = "0";
     string status_patient = "0";
-    bool testing_or_not = false;
-    bool transfer_hospital = false;
-    double status_payment = -1;
+    bool testing_or_not = false;// có thực hiện test hay không
+    bool transfer_hospital = false;// có chuyển viện hay không
+    double status_payment = 0;
     string follow_up_appointment = "0";
 
 public:
     static long long set_id;
     // dành cho administrator KHÓ
-    void set_data(); 
+    /*1. đưa ra ID checking tự động
+      2. cho bt ai là người khám, phòng nào
+      dựa vào độ khẩn cấp, bác sĩ đang có người chờ ít nhất
+      3. trạng thái waiting*/
+    void set_data();
 
     void display() const;
   
     // dành cho doctor_general
     void update_data_general_doctor(double x);
 
-    // void update_status_payment_doctor(){
-    //     status_payment = -total_cost;
-    // }
-    // void update_result_record_doctor();
-    // void update_is_delete(int x);
-    // void display() const;
-    // long long get_id() const { return id_checking; }
-    // long long get_id_patient() const { return id_patient; }
-    // long long get_id_doctor() const {return id_doctor;}
-    // bool get_is_delete() const{return is_delete;}
-    // string get_status_checking() const{return status_checking;}
-    // void read_a_object_from_file(const string &line);
-    // void write_a_object_to_file(ofstream &file);
+    void read_a_object_from_file(const string &line);
+    void write_a_object_to_file(ofstream &file);
+   
 };
+
 
 #endif 
