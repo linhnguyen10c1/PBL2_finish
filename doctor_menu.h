@@ -57,6 +57,39 @@ void display_list_waiting(long long ID_doctor, LinkedList<Record> &record_list){
     }
 }
 
+void  display_list_waiting_in_testing(long long ID, LinkedList<Testing> &record_list){
+    Node<Testing> *current = record_list.get_head();
+    if(current == nullptr){
+      cout << "List empty" << endl;
+      return;
+    }
+    Node<Testing>* temp = current;
+    while (temp != nullptr) {
+        if (temp->data.get_id_doctor() == ID && !temp->data.get_is_deleted() && temp->data.get_status_checking() == "waiting" && temp->data.get_priority() == 1) {
+            temp->data.display();
+        }
+        temp = temp->next;
+    }
+
+    // Print records with priority 2
+    temp = current;
+    while (temp != nullptr) {
+        if (temp->data.get_id_doctor() == ID && !temp->data.get_is_deleted() && temp->data.get_status_checking() == "waiting" && temp->data.get_priority() == 2) {
+            temp->data.display();
+        }
+        temp = temp->next;
+    }
+
+    // Print records with priority 3
+    temp = current;
+    while (temp != nullptr) {
+        if (temp->data.get_id_doctor() == ID && !temp->data.get_is_deleted() && temp->data.get_status_checking() == "waiting" && temp->data.get_priority() == 3) {
+            temp->data.display();
+        }
+        temp = temp->next;
+    }
+}
+
 
 void search_record_patient(long long ID_patient, LinkedList<Record> &record_list) {
     Node<Record>* current = record_list.get_head();
@@ -79,6 +112,69 @@ void search_record_patient(long long ID_patient, LinkedList<Record> &record_list
     }
 }
 
+void Menu_detail_doctor(long long ID_doctor, LinkedList<Record> &record_list, LinkedList<Doctor> &doctor_list){
+    int choice;
+		LinkedList<Testing> testing_list;
+	  read_data_from_file_for_test(testing_list, "testings.txt");
+	do
+	{
+		cout << "1. Waiting List" << endl
+				 << "2. List Records of a Patient" << endl
+				 << "3. Testing" << endl
+				 << "0. Exit" << endl;
+		cout << "Choose your option: ";
+		cin >> choice;
+		switch (choice)
+		{
+		case 1:
+		{
+			display_list_waiting_in_testing(ID_doctor, testing_list);
+			break;
+		}
+		case 2:
+		{
+			long long ID_patient;
+			cout << "ID patient you want search records: ";
+			cin >> ID_patient;
+			cin.ignore();
+			search_record_patient(ID_patient, record_list);
+			break;
+		}
+		case 3: {
+      long long ID_checking;
+    bool checking_exists = false;
+    do {
+        cout << "Enter checking ID: ";
+        cin >> ID_checking;
+        cin.ignore();
+        // ngoài tồn tại ra thì còn điều kiện không đang test một cái khác
+        checking_exists = testing_list.search_check_update_delete_recover_by_id(ID_checking, "check");
+
+        if (!checking_exists) {
+            int choice;
+            cout << "Checking ID not found. Choose an option:" << endl;
+            cout << "1. Re-enter checking ID" << endl;
+            cout << "2. Exit" << endl;
+            cout << "Choose an option: ";
+            cin >> choice;
+            cin.ignore();
+            if (choice == 2) {
+                return;
+            }
+        }
+    } while (!checking_exists);
+           // sau khi update thì chỉ ra bệnh nhân nên đi đến đâu tiếp theo
+		   testing_list.update_data_in_testing(ID_checking, ID_doctor);
+			 write_data_to_file(testing_list, "testings.txt");
+		}
+		case 0:{
+
+		}
+
+		}
+	}while(choice != 0);
+}
+
 void Menu_general_doctor(long long ID_doctor, LinkedList<Record> &record_list, LinkedList<Doctor> &doctor_list)
 {
 	int choice;
@@ -94,7 +190,7 @@ void Menu_general_doctor(long long ID_doctor, LinkedList<Record> &record_list, L
 		{
 		case 1:
 		{
-			display_list_waiting(ID_doctor, record_list);
+			display_list_waiting(ID_doctor,record_list);
 			break;
 		}
 		case 2:
@@ -137,7 +233,7 @@ void Menu_general_doctor(long long ID_doctor, LinkedList<Record> &record_list, L
 			do
 			{
 				cout << "1. Checking general" << endl
-             << "2. Result Testing" << endl // hiện ra kết quả khám, và update lại kết quả khám
+                      << "2. Result Testing" << endl // hiện ra kết quả khám, và update lại kết quả khám
             // trạng thái checking, cost, start_checking, heart, blood, symptom, diagnosis, status patient, testing, transfer_hospital
 						 << "3. Prescription" << endl
 						 << "4. Appointment" << endl
@@ -155,19 +251,25 @@ void Menu_general_doctor(long long ID_doctor, LinkedList<Record> &record_list, L
 				}
 				case 2:
 				{
+					if(record_list.update_check_for_test(ID_checking, "check_test_or_not")){
+						LinkedList<Testing> testing_list;
+						read_data_from_file_for_test(testing_list, "testings.txt");
+						testing_list.display_list_for_test(ID_checking);
+						record_list.update_check_for_test(ID_checking, "update_result");
+						write_data_to_file(record_list, "records.txt");
+					}
+					else {
+						cout << "This ID checking don't has testing" << endl;
+					}
+              // để truy cập được chức năng này thì trong record có testing_or_not=yes					
         			// testing_list.display_list_testing(ID_checking);
 							// break;
 				}
 				case 3:
 				{
-					// record_list.update_result_record_from_doctor(ID_checking);
-					// write_data_to_file(record_list, "records.txt");
-					// break;
+
 				}
 				case 4:
-				{
-				}
-				case 5:
 				{
 				}
 				case 0:
@@ -212,7 +314,7 @@ void menu_doctor(long long ID_doctor){
 			}
 			else if (check_specialization(ID_doctor, doctor_list) == 2)
 			{
-				//Menu_detail_doctor(ID, record_list, doctor_list);
+				Menu_detail_doctor(ID_doctor, record_list, doctor_list);
 			}
 			// nếu là bác sĩ cận lâm sàng
 		}
@@ -220,4 +322,5 @@ void menu_doctor(long long ID_doctor){
 	} while (choice != 0);
 
 }
+
 #endif

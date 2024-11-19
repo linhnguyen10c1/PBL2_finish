@@ -28,18 +28,27 @@ public:
     Node<T>* get_head() const { return head; }
     // check xem tai khoan bac si, benh nhan, admin co ton tai ko
     int check_id_password(long long id, string &password);
-    // thêm một node vào file
+    // thêm một node vào file với điều kiện ID khác nhau
     void add(const T& item);
+    void add_for_test(const T& item);
+
     long long get_id_from_file();
     // hiện thị lớp ngày 
     void display_list() const;
+    
+    void display_list_for_test(long long ID) const;
+
+    int update_check_for_test(long long ID, const string &function);
+
+    void update_data_in_testing(long long ID_checking, long long ID_doctor);
 
     // đưa ID vào đúng là được data.get_id() = id 
     // search: cho dù ko tồn tại vẫn có thể tìm ra display
     // check: phải tồn tại data.get_is_deleted = false -> return 1
     // update: data.get_is_deleted = false -> data.update
-    int search_check_update_delete_recover_by_id(long long ID,const string &function);
 
+    int search_check_update_delete_recover_by_id(long long ID,const string &function);
+    int count_waiting_room(long long doctor_id) const;
     int count_patients_today(long long id_doctor) const;
     int count_patients_by_priority(long long doctor_id, int priority) const ;
 };
@@ -62,7 +71,7 @@ int LinkedList<T>::check_id_password(long long id, string &password){
         cout << "Item don't exsit" << endl;
         return 0;
 }
-
+// add cho trường hợp csdl có khóa chính
 template <typename T>
 void LinkedList<T>::add(const T& item) {
         Node<T>* newNode = new Node<T>{item, nullptr};
@@ -73,6 +82,26 @@ void LinkedList<T>::add(const T& item) {
             Node<T>* temp = head;
             while (temp->next) {
                 if(temp->data.get_id() == item.get_id()){
+                    cout << "Item existed" << endl;
+                    return;
+                }
+                temp = temp->next;
+            }
+            temp->next = newNode;
+        }
+    }
+
+// add cho trường hợp csdl chỉ có hai khóa ngoại
+template <typename T>
+void LinkedList<T>::add_for_test(const T& item) {
+        Node<T>* newNode = new Node<T>{item, nullptr};
+        if (!head) {
+            head = newNode;
+            return;
+        } else {
+            Node<T>* temp = head;
+            while (temp->next) {
+                if(temp->data.get_id() == item.get_id() && temp->data.get_id_doctor()==item.get_id_doctor()){
                     cout << "Item existed" << endl;
                     return;
                 }
@@ -109,6 +138,20 @@ void LinkedList<T>::display_list() const{
         }
     }
 
+template <typename T>
+void LinkedList<T>::display_list_for_test(long long ID) const{
+        Node<T>* current = head;
+    if(current == nullptr){
+        cout << "List empty" << endl;
+        return;
+    }
+    while (current != nullptr){
+        if(current->data.get_id() == ID && current->data.get_date() != "0" )  {
+            current->data.display();
+        }
+          current = current->next;
+    }
+}
 template <typename T>
 int LinkedList<T>::search_check_update_delete_recover_by_id(long long ID, const string &function){
     Node<T>* current = head;
@@ -154,6 +197,46 @@ int LinkedList<T>::search_check_update_delete_recover_by_id(long long ID, const 
     }
 
 template <typename T>
+int LinkedList<T>::update_check_for_test(long long ID, const string &function){
+    Node<T>* current = head;
+    if(current == nullptr){
+        cout << "List empty" << endl;
+        return 0;
+    }
+    while (current != nullptr) {
+        if (current->data.get_id() == ID) {
+           if(function == "check_test_or_not"){
+                if(current->data.get_testing_or_not()) return 1;
+                else return 0;
+           }
+           else if(function == "update_result"){
+                 current->data.update_result_by_doctor();
+                 return 1;
+           }
+        }
+        current = current->next;
+    }
+    return 0;
+}
+
+template <typename T>
+void LinkedList<T>::update_data_in_testing(long long ID_checking, long long ID_doctor){
+    Node<T>* current = head;
+    if(current == nullptr){
+        cout << "List empty" << endl;
+    }
+    while (current != nullptr) {
+        cout << "haha1" << endl;
+        if(current->data.get_id() == ID_checking && current->data.get_id_doctor() == ID_doctor){
+            cout << "haha" << endl;
+            current->data.update_data();
+            return;
+        }
+        current = current->next;
+    }
+}
+
+template <typename T>
 int LinkedList<T>::count_patients_today(long long doctor_id) const {
     int count = 0;
     time_t now = time(0);
@@ -163,7 +246,24 @@ int LinkedList<T>::count_patients_today(long long doctor_id) const {
     Node<T>* current = head;
     while (current != nullptr) {
         const T& record = current->data;
-        if (record.get_id_doctor() == doctor_id && record.get_date().substr(0, 10) == current_date) {
+        if (record.get_id_doctor() == doctor_id && record.get_date().substr(0, 10) == current_date && !record.get_is_deleted() ) {
+            count++;
+        }
+        current = current->next;
+    }
+    return count;
+}
+
+
+template <typename T>
+int LinkedList<T>::count_patients_by_priority(long long doctor_id, int priority) const {
+    int count = 0;
+    Node<T>* current = head;
+    if(current == nullptr) {cout << "Danh sách trống"<< endl;}
+    while (current != nullptr) {
+        const T& record = current->data;
+        if (record.get_id_doctor() == doctor_id && record.get_priority() == priority && !record.get_is_deleted()
+            && record.get_status_checking() == "waiting") {
             count++;
         }
         current = current->next;
@@ -172,12 +272,12 @@ int LinkedList<T>::count_patients_today(long long doctor_id) const {
 }
 
 template <typename T>
-int LinkedList<T>::count_patients_by_priority(long long doctor_id, int priority) const {
+int LinkedList<T>::count_waiting_room(long long doctor_id) const{
     int count = 0;
     Node<T>* current = head;
     while (current != nullptr) {
         const T& record = current->data;
-        if (record.get_id_doctor() == doctor_id && record.get_priority() == priority && !record.get_is_deleted()) {
+        if (record.get_status_checking() == "waiting" && record.get_id_doctor() == doctor_id &&!record.get_is_deleted() ) {
             count++;
         }
         current = current->next;
@@ -193,6 +293,18 @@ void read_data_from_file(LinkedList<T>& list, const string& filename) {
         T item;
         item.read_a_object_from_file(line); 
         list.add(item); 
+    }
+    file.close();  
+}
+
+template <typename T>
+void read_data_from_file_for_test(LinkedList<T>& list, const string& filename) {
+    ifstream file(filename); 
+    string line;
+    while (getline(file, line)) {  
+        T item;
+        item.read_a_object_from_file(line); 
+        list.add_for_test(item); 
     }
     file.close();  
 }

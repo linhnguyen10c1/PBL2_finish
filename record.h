@@ -41,6 +41,7 @@ public:
     void update_data();
 
     long long get_id_patient() const{ return id_patient;}
+    bool get_testing_or_not()const {return testing_or_not;}
 
     void read_a_object_from_file(const string &line);
     void write_a_object_to_file(ofstream &file);
@@ -48,6 +49,7 @@ public:
     void testing_detail(long long ID_checking, int priority);
    
 };
+
 
 
 #endif 

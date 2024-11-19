@@ -22,11 +22,6 @@ protected:
     string phone;
     bool is_deleted = false;
 public:
-    Person(long long ID, string password, bool is_deleted)
-    :ID{ID}, password{password}, is_deleted{is_deleted}{}
-
-    Person(){}
-   
     static string generate_random_password(int length);
     
     void set_data();

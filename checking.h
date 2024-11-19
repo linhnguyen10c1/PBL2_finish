@@ -38,6 +38,7 @@ protected:
     bool is_deleted = false;
 
 public:
+    static int x;
     static long long set_id;
     void display() const;
 

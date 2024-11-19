@@ -1,28 +1,34 @@
 #include "record.h"
 
 long long Record::set_id = 5000000;
+void where(long long ID_checking,LinkedList<Testing> &testing_list, int priority);
 
 // điều kiện để chỉ định bác sĩ nào khám cho bạn
 Doctor* assign_doctor(LinkedList<Doctor>& doctor_list, LinkedList<Record>& record_list, int priority) {
     Doctor* assigned_doctor = nullptr;
-    int min_waiting = INT_MAX;
+    int min_priority_1_patients = INT_MAX;
+    int min_total_waiting = INT_MAX;
 
     Node<Doctor>* current = doctor_list.get_head();
     while (current != nullptr) {
         Doctor& doctor = current->data;
         int patients_today = record_list.count_patients_today(doctor.get_id());
-        int priority_1_patients = record_list.count_patients_by_priority(doctor.get_id(), 1);
         if (doctor.get_specialization() == "General" 
             && !doctor.get_is_deleted() 
             && patients_today < 65) {
+            int priority_1_patients = record_list.count_patients_by_priority(doctor.get_id(), 1);
             if (priority == 1) {
-                if (priority_1_patients < min_waiting) {
-                    min_waiting = priority_1_patients;
+                if (priority_1_patients < min_priority_1_patients || 
+                    (priority_1_patients == min_priority_1_patients && doctor.get_waiting() < min_total_waiting)) {
+                    min_priority_1_patients = priority_1_patients;
+                    min_total_waiting = doctor.get_waiting();
                     assigned_doctor = &doctor;
                 }
             } else {
-                if (doctor.get_waiting() < min_waiting) {
-                    min_waiting = doctor.get_waiting();
+                if (doctor.get_waiting() < min_total_waiting || 
+                    (doctor.get_waiting() == min_total_waiting && priority_1_patients < min_priority_1_patients)) {
+                    min_total_waiting = doctor.get_waiting();
+                    min_priority_1_patients = priority_1_patients;
                     assigned_doctor = &doctor;
                 }
             }
@@ -44,15 +50,18 @@ void Record::display() const{
          << "Status Patient: " << status_patient << ", "
          << "Testing or not: " << testing_or_not << ", "
          << "Transfer or not: " << transfer_hospital << ", "
+         << "Cost: " << cost << ", "
          << "Status Payment: " << status_payment << ", "
          << "Follow-up-appointment: " << follow_up_appointment << endl;
 }
 
+// dành cho admin sẽ khởi tạo dữ liệu và thuật toán sẽ đưa ra bác sĩ khám cho bệnh nhân
 void Record::set_data(){
     LinkedList<Patient> patient_list;
     LinkedList<Doctor> doctor_list;
     LinkedList<Record> record_list;
     read_data_from_file(patient_list,"patients.txt");
+    read_data_from_file(record_list, "records.txt");
     // kiểm tra bệnh nhân đã tồn tại trong danh sách
     bool patient_exists = false;
     do {
@@ -79,10 +88,12 @@ void Record::set_data(){
   // độ ưu tiên 1 là khẩn cấp, 3 là không, 2 là đã đặt trước đó rồi
 
     if(priority == 0){
-      cout << "Priority 1-3: ";
+      cout << "Priority 1 or 3: ";
       cin >> priority;
       cin.ignore();
     }
+
+    cout << "priority: " << priority;
 
      // set dữ liệu id_checking, urgent
     id_checking = set_id++;
@@ -90,7 +101,7 @@ void Record::set_data(){
    
     // phần luồng khám đến khám bác sĩ nào
     read_data_from_file(doctor_list, "doctors.txt");
-     Doctor* assigned_doctor = assign_doctor(doctor_list, record_list, 1);
+     Doctor* assigned_doctor = assign_doctor(doctor_list, record_list, priority);
 
     // Check if a suitable doctor was found
     if (assigned_doctor) {
@@ -183,7 +194,7 @@ void Record::write_a_object_to_file(ofstream &file) {
 }
 
 
-// update dữ liệu của bác sĩ general
+// dành cho bác sĩ có chức năng viết dữ liệu vào file 
 void Record::update_data(){
     status_checking = "processing";
     // decreasing?? doctors.txt
@@ -216,6 +227,7 @@ void Record::update_data(){
     
     int testing;
     do {
+        x = 0;
         cout << "Testing or not (1 for Yes, 0 for No): ";
         cin >> testing;
         cin.ignore();
@@ -250,10 +262,9 @@ void Record::update_data(){
     update_result_by_doctor();
 }
 
-
 void Record::testing_detail(long long ID_checking, int priority){
     LinkedList<Testing> testing_list;
-	read_data_from_file(testing_list, "testings.txt");
+	read_data_from_file_for_test(testing_list, "testings.txt");
 	Testing item;
 	    int choice;
 		    do
@@ -270,37 +281,45 @@ void Record::testing_detail(long long ID_checking, int priority){
 						switch (choice)
 						{
 						case 1:
-						{
-							item.set_data(ID_checking, "X-ray", priority);
-							testing_list.add(item);
+						{   string part_body;
+                            cout << "Enter part of body need testing: ";
+                            getline(cin, part_body);
+							item.set_data(ID_checking, "X-ray", priority, part_body);
+							testing_list.add_for_test(item);
 							write_data_to_file(testing_list, "testings.txt");
 							break;
 						}
 						case 2:
 						{
-							item.set_data(ID_checking, "Endoscopy", priority);
-							testing_list.add(item);
+                            string part_body;
+                            cout << "Enter part of body need testing: ";
+                            getline(cin, part_body);
+							item.set_data(ID_checking, "Endoscopy", priority, part_body);
+							testing_list.add_for_test(item);
 							write_data_to_file(testing_list, "testings.txt");
 							break;
 						}
 						case 3:
 						{
-							item.set_data(ID_checking, "Ultrasound", priority);
-							testing_list.add(item);
+                            string part_body;
+                            cout << "Enter part of body need testing: ";
+                            getline(cin, part_body);
+							item.set_data(ID_checking, "Ultrasound", priority, part_body);
+							testing_list.add_for_test(item);
 							write_data_to_file(testing_list, "testings.txt");
 							break;
 						}
 						case 4:
 						{
-							item.set_data(ID_checking, "Blood and Urine Test", priority);
-							testing_list.add(item);
+							item.set_data(ID_checking, "Blood and Urine Test", priority, "Blood and Urine");
+							testing_list.add_for_test(item);
 							write_data_to_file(testing_list, "testings.txt");
 							break;
 						}
 						case 5:
 						{
-							item.set_data(ID_checking, "Electrocardiogram", priority);
-							testing_list.add(item);
+							item.set_data(ID_checking, "Electrocardiogram", priority, "Heart");
+							testing_list.add_for_test(item);
 							write_data_to_file(testing_list, "testings.txt");
 							break;
 						}
@@ -312,4 +331,41 @@ void Record::testing_detail(long long ID_checking, int priority){
 						}
 
 					} while (choice != 0);
+                // chỉ ra bệnh nhân nên đi đến đâu đầu tiên
+                where(ID_checking, testing_list, priority); 
+                
 				}
+// coi lại đoạn count_waiting_room
+void where(long long ID_checking,LinkedList<Testing> &testing_list, int priority){
+   int min_priority_1_patients = INT_MAX;
+   int min_total_waiting = INT_MAX;
+   Testing *assigned_test = nullptr;
+   Node<Testing> *current = testing_list.get_head();
+   while(current != nullptr){
+    Testing &testing = current->data;
+    if(testing.get_id() == ID_checking && testing.get_status_checking() == "waiting"){
+        int priority_1_patients = testing_list.count_patients_by_priority(testing.get_id_doctor(), priority);
+        int total_waiting = testing_list.count_waiting_room(testing.get_id_doctor()) ;
+        if(priority == 1){
+            if(priority_1_patients < min_priority_1_patients ||
+                 (priority_1_patients == min_priority_1_patients && total_waiting < min_total_waiting)){
+                    min_priority_1_patients = priority_1_patients;
+                    min_total_waiting = total_waiting;
+                    assigned_test = &testing;
+            }
+        }
+        else {
+            if(total_waiting < min_total_waiting || (total_waiting == min_total_waiting && priority_1_patients < min_priority_1_patients)){
+                min_total_waiting = total_waiting;
+                min_priority_1_patients = priority_1_patients;
+                assigned_test = &testing;
+            }
+        }
+    }
+    current = current->next;
+   }
+   cout << "You should go to: " << (*assigned_test).get_room() << " first" << endl;
+   (*assigned_test). update_data_have_another_testing();
+   write_data_to_file(testing_list, "testings.txt");
+
+}
