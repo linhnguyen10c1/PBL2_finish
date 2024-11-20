@@ -8,7 +8,7 @@ void Testing::check_condition_doctor(const string &type){
     Node<Doctor> *current = doctor_list.get_head();
     while (current != nullptr) {
         Doctor& doctor = current->data;
-        int patients_today = testing_list.count_patients_today(doctor.get_id());
+        int patients_today = testing_list.count_patients(doctor.get_id(), "today");
         if (doctor.get_specialization() == type&& !doctor.get_is_deleted() && patients_today < 65){
                 if (id_doctor2 == 0) {
                 this->id_doctor2 = doctor.get_id();

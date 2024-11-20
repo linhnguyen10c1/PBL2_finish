@@ -1,7 +1,6 @@
 #include "record.h"
-
+void where(long long ID_checking,LinkedList<Testing> &testing_list);
 long long Record::set_id = 5000000;
-void where(long long ID_checking,LinkedList<Testing> &testing_list, int priority);
 
 // điều kiện để chỉ định bác sĩ nào khám cho bạn
 Doctor* assign_doctor(LinkedList<Doctor>& doctor_list, LinkedList<Record>& record_list, int priority) {
@@ -12,11 +11,11 @@ Doctor* assign_doctor(LinkedList<Doctor>& doctor_list, LinkedList<Record>& recor
     Node<Doctor>* current = doctor_list.get_head();
     while (current != nullptr) {
         Doctor& doctor = current->data;
-        int patients_today = record_list.count_patients_today(doctor.get_id());
+        int patients_today = record_list.count_patients(doctor.get_id(), "today");
         if (doctor.get_specialization() == "General" 
             && !doctor.get_is_deleted() 
             && patients_today < 65) {
-            int priority_1_patients = record_list.count_patients_by_priority(doctor.get_id(), 1);
+            int priority_1_patients = record_list.count_patients(doctor.get_id(),"priority", 1);
             if (priority == 1) {
                 if (priority_1_patients < min_priority_1_patients || 
                     (priority_1_patients == min_priority_1_patients && doctor.get_waiting() < min_total_waiting)) {
@@ -196,6 +195,7 @@ void Record::write_a_object_to_file(ofstream &file) {
 
 // dành cho bác sĩ có chức năng viết dữ liệu vào file 
 void Record::update_data(){
+     x = 0;
     status_checking = "processing";
     // decreasing?? doctors.txt
     update_patients_waiting_in_list(get_id_doctor(), "decreasing");
@@ -227,7 +227,6 @@ void Record::update_data(){
     
     int testing;
     do {
-        x = 0;
         cout << "Testing or not (1 for Yes, 0 for No): ";
         cin >> testing;
         cin.ignore();
@@ -332,11 +331,11 @@ void Record::testing_detail(long long ID_checking, int priority){
 
 					} while (choice != 0);
                 // chỉ ra bệnh nhân nên đi đến đâu đầu tiên
-                where(ID_checking, testing_list, priority); 
+                where(ID_checking, testing_list); 
                 
 				}
 // coi lại đoạn count_waiting_room
-void where(long long ID_checking,LinkedList<Testing> &testing_list, int priority){
+void where(long long ID_checking,LinkedList<Testing> &testing_list){
    int min_priority_1_patients = INT_MAX;
    int min_total_waiting = INT_MAX;
    Testing *assigned_test = nullptr;
@@ -344,9 +343,9 @@ void where(long long ID_checking,LinkedList<Testing> &testing_list, int priority
    while(current != nullptr){
     Testing &testing = current->data;
     if(testing.get_id() == ID_checking && testing.get_status_checking() == "waiting"){
-        int priority_1_patients = testing_list.count_patients_by_priority(testing.get_id_doctor(), priority);
-        int total_waiting = testing_list.count_waiting_room(testing.get_id_doctor()) ;
-        if(priority == 1){
+        int priority_1_patients = testing_list.count_patients(testing.get_id_doctor(),"priority",testing.get_priority());
+        int total_waiting = testing_list.count_patients(testing.get_id_doctor(), "waiting") ;
+        if(testing.get_priority() == 1){
             if(priority_1_patients < min_priority_1_patients ||
                  (priority_1_patients == min_priority_1_patients && total_waiting < min_total_waiting)){
                     min_priority_1_patients = priority_1_patients;
@@ -364,8 +363,14 @@ void where(long long ID_checking,LinkedList<Testing> &testing_list, int priority
     }
     current = current->next;
    }
-   cout << "You should go to: " << (*assigned_test).get_room() << " first" << endl;
+   if(assigned_test == nullptr){
+    cout << "GO BACK GENERAL DOCTOR" << endl;
+    return;
+   }
+   cout << "You should go to at: " << (*assigned_test).get_room() << " room" << endl;
    (*assigned_test). update_data_have_another_testing();
    write_data_to_file(testing_list, "testings.txt");
 
 }
+
+

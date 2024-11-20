@@ -1,5 +1,11 @@
-5000000,2000000,1000000,1,101,completed,19-11-2024 19:5:17,19-11-2024 19:23:49,200,100,symptom,diagnosis,statuspatient,Yes,No,Balala,lalala,0,100,0,No
-5000001,2000002,1000001,3,102,completed,19-11-2024 19:10:0,19-11-2024 20:15:4,100,200,symptom,diagnosis,status patient,Yes,No,Nope,Noe,0,100,0,No
-5000002,2000001,1000002,3,103,completed,19-11-2024 20:31:59,19-11-2024 21:17:15,200,200,symptom,diagnosis,status,Yes,No,BlaBla,Note,0,165,0,No
-5000003,2000003,1000001,1,102,completed,19-11-2024 19:7:33,19-11-2024 20:21:27,100,200,symptom,diagnosis,status,Yes,No,rtyth,fhhj,0,100,0,No
-5000004,2000004,1000002,3,103,completed,19-11-2024 20:41:8,19-11-2024 20:49:30,100,200,Symptom,diagnosis,status ,Yes,No,KaKa,PhaPha,0,100,0,No
+5000000,2000000,1000000,1,101,completed,20-11-2024 10:15:1,20-11-2024 10:15:26,100,200,symptom,diagnoees,status,No,No,Haha,note,0,100,0,No
+5000001,2000001,1000001,1,102,completed,20-11-2024 10:25:6,20-11-2024 10:26:22,2000,100,symptom,diagnosis,status,No,Yes,0,0,0,0,0,No
+5000002,2000002,1000002,3,103,completed,20-11-2024 14:58:22,20-11-2024 15:17:4,100,150,symptom,diagnosis,status,Yes,No,haha,haha,0,200,0,No
+5000003,2000003,1000002,3,103,completed,20-11-2024 15:14:33,20-11-2024 15:15:6,100,200,symptom,diagnosis,status,No,No,result,note,0,100,0,No
+5000004,2000004,1000000,3,101,processing,20-11-2024 10:21:16,0,100,200,100,diagnosis,status,Yes,No,0,0,0,0,0,No
+5000005,2000005,1000002,1,103,completed,20-11-2024 14:38:5,20-11-2024 14:57:35,100,200,symptom,diagnosis,status ,Yes,No,result,note,0,100,0,No
+5000006,2000006,1000001,3,102,completed,20-11-2024 15:6:32,20-11-2024 15:11:47,100,200,symptom,diagnosis,status,Yes,No,No,note,0,245,0,No
+5000007,2000007,1000000,1,101,completed,20-11-2024 10:16:35,20-11-2024 10:16:59,100,200,symptom,diagnosis,status,No,No,gsg,dgs,0,100,0,No
+5000008,2000008,1000001,1,102,processing,20-11-2024 10:28:9,0,100,200,symptom,diagnosis,status,Yes,No,0,0,0,0,0,No
+5000009,2000009,1000000,1,101,completed,20-11-2024 15:21:55,20-11-2024 15:22:15,100,200,100,digag,dghs,No,No,result,note,0,100,0,No
+5000010,2000010,1000001,3,102,completed,20-11-2024 15:23:6,20-11-2024 15:23:35,100,200,symtom,diagnosis,status,No,No,result,note,0,100,0,No

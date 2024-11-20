@@ -13,6 +13,10 @@
 #include "testing.h"
 using namespace std;
 
+class Testing;
+
+void where(long long ID_checking,LinkedList<Testing> &testing_list);
+
 class Record :public Checking{
 private:
     long long id_patient;

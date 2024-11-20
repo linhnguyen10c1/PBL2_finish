@@ -37,7 +37,9 @@ public:
     void update_is_deleted();
     void update_is_recovered();
 
-    void decrease_quantity();// khi kê đơn cho thì hệ thống tự động trừ quatity trong kho
+    void decrease_quantity(int x){
+      quantity -= x;
+    };// khi kê đơn cho thì hệ thống tự động trừ quatity trong kho
 
     void read_a_object_from_file(const string &line);
     void write_a_object_to_file(ofstream &file);
@@ -46,6 +48,8 @@ public:
     bool get_is_deleted() const {return is_deleted;}
     string get_name() const { return name; }
     int get_quantity()const { return quantity;}
+    double get_price() const {return cost;}
+    string get_function()const {return usage;}
 };
 
 #endif

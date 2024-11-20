@@ -45,7 +45,7 @@ void Checking::update_is_recovered() {
         }
     }
 
-void Checking::update_is_deleted(){
+void Checking:: update_is_deleted(){
         if(start_checking == "0"){
             is_deleted = true;
             update_patients_waiting_in_list(get_id_doctor(), "decreasing");

@@ -27,6 +27,9 @@ class Testing :public Checking{
    void update_data_have_another_testing(){
       is_having_another_testing = false;
    }
+   bool get_is_having_another_testing(){
+      return is_having_another_testing;
+   }
    void check_condition_doctor(const string &type);
    void read_a_object_from_file(const string &line);
    void write_a_object_to_file(ofstream &file);
